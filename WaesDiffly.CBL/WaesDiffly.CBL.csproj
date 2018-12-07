@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WaesDiffly.DataLayer\WaesDiffly.DataLayer.csproj" />
+    <ProjectReference Include="..\WaesDiffly.Model\WaesDiffly.Model.csproj" />
+  </ItemGroup>
+
+</Project>
