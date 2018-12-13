@@ -7,6 +7,6 @@ namespace WaesDiffly.CBL.Helper
 {
     public static class DatabaseHelperFactory
     {
-        public static AbstractDataLayer DataLayer { get; } = new StaticLayer();
+        public static AbstractDataLayer DataLayer { get; set; } = new StaticLayer();
     }
 }

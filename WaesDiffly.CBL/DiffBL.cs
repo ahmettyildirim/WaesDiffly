@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using WaesDiffly.CBL.Helper;
+using WaesDiffly.DataLayer;
 using WaesDiffly.Model.Constants;
 using WaesDiffly.Model.Models;
 using WaesDifflyModel.Constants;
@@ -12,6 +13,23 @@ namespace WaesDiffly.CBL
     /// </summary>
     public class DiffBL
     {
+        /// <summary>
+        ///  Constructor that takes no arguments and use initial databaselayer
+        /// </summary>
+        /// <param name="dataLayer"></param>
+        public DiffBL()
+        {
+            
+        }
+        /// <summary>
+        /// This constructor takes an datalayer argument
+        /// </summary>
+        /// <param name="dataLayer">It defines whih layer will be use.</param>
+        public DiffBL(AbstractDataLayer dataLayer)
+        {
+            DatabaseHelperFactory.DataLayer = dataLayer;
+        }
+
         /// <summary>
         /// Create or update record acccording to given ID
         /// </summary>

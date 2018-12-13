@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Description;
 using WaesDiffly.CBL;
 using WaesDiffly.Filters;
 using WaesDiffly.Model.Constants;
@@ -22,19 +23,34 @@ namespace WaesDiffly.Controllers
     {
         private readonly DiffBL diffBL = new DiffBL(); // This is a constructor for busines logic operations. All operations are done in CBL layer.
 
+        public DiffController()
+        {
+
+        }
+
+        public DiffController(DiffBL diffBL)
+        {
+            this.diffBL = diffBL;
+        }
+        
+
+
         /// <summary>
         /// Returns the result of diffying for giving ID.
         /// </summary>
         /// <param name="id">Defines Id of left and right side that wants to diff</param>
         /// <returns>The diff result or error message</returns>
         [Route("{id:int:min(1)}")]
-        public HttpResponseMessage Get(int id)
+        [ResponseType(typeof(DiffResponse))]
+        public IHttpActionResult Get(int id)
         {
             var result = diffBL.CompareSides(id);
+            if (result.ReturnCode != RetCode.Success)
+            {
+                return BadRequest(result.ErrorMessage);
+            }
 
-            return result.ReturnCode != RetCode.Success ?
-                Request.CreateErrorResponse(HttpStatusCode.BadRequest, result.ErrorMessage) :
-                Request.CreateResponse(HttpStatusCode.OK, result.Message);
+            return Ok(result.Message);
         }
         /// <summary>
         /// Create or updates new side of given Id
@@ -44,13 +60,15 @@ namespace WaesDiffly.Controllers
         /// <param name="data">json object. Should contains an element named "Content" which should be base64Data.</param>
         /// <returns>If succeed return 201 code, otherwise returns error message</returns>
         [Route("{id:int:min(1)}/{side:diffside}")]
-        public HttpResponseMessage Post(int id, DiffSide side, [FromBody]Base64Data data)
+        [ResponseType(typeof(void))]
+        public IHttpActionResult Post(int id, DiffSide side, [FromBody]Base64Data data)
         {
             var result = diffBL.AddOrUpdate(id, new DiffRecord(side, data.Content));
-            return result.ReturnCode != RetCode.Success ?
-                Request.CreateErrorResponse(HttpStatusCode.BadRequest, result.ErrorMessage) :
-                Request.CreateResponse(HttpStatusCode.Created);
-
+            if (result.ReturnCode != RetCode.Success)
+            {
+                return BadRequest(result.ErrorMessage);
+            }
+            return Ok();
         }
 
     }
